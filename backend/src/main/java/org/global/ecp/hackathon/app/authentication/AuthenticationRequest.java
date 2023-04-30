@@ -1,4 +1,4 @@
-package org.global.ecp.hackathon.app.user.model;
+package org.global.ecp.hackathon.app.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,12 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+@NoArgsConstructor
+public class AuthenticationRequest {
 
-    private String name;
+    private String username;
     private String password;
-    private String email;
-    private String avatarUrl;
+
 }

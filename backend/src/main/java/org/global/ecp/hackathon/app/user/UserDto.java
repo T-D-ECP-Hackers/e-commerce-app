@@ -1,6 +1,4 @@
-package org.global.ecp.hackathon.app.user.model;
-
-import java.util.UUID;
+package org.global.ecp.hackathon.app.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class UserDto {
 
-    private UUID id;
-    private String name;
+    private String username;
     private String password;
     private String email;
-    private String avatarUrl;
 }

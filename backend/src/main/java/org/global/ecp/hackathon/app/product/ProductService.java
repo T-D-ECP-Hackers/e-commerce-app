@@ -1,9 +1,9 @@
 package org.global.ecp.hackathon.app.product;
 
 import java.util.List;
-import java.util.UUID;
 
-import org.global.ecp.hackathon.app.product.model.Product;
+import org.global.ecp.hackathon.app.exception.ProductAlreadyExistsException;
+import org.global.ecp.hackathon.app.exception.ProductNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,47 +13,41 @@ public class ProductService {
 
     public ProductService(final ProductRepository productRepository) {this.productRepository = productRepository;}
 
-    public Product createProduct(final Product product) {
+    public Product create(final ProductDto productDto) {
 
-        // TODO: add to database
-        UUID productId = generateProductId();
-        Product newProduct = buildProduct(productId, product);
-        productRepository.addToCache(newProduct);
-        return newProduct;
+        final var productDtoName = productDto.getName();
+        if (productRepository.existsByName(productDtoName)) {
+            throw new ProductAlreadyExistsException("Product already exists with the same name: '" + productDtoName + "'");
+        }
+        final var product = createProduct(productDto);
+        return productRepository.save(product);
+    }
+
+    private Product createProduct(final ProductDto productDto) {
+
+        return Product.builder()
+                      .name(productDto.getName())
+                      .description(productDto.getDescription())
+                      .price(productDto.getPrice())
+                      .build();
     }
 
     public List<Product> getAllProducts() {
 
-        return productRepository.getAllFromCache();
+        return productRepository.findAll();
     }
 
-    public Product getProductById(final UUID id) {
+    public Product getProductById(final Long id) {
 
-        return productRepository.getById(id);
+        final var optionalProduct = productRepository.getProductById(id);
+        if (optionalProduct.isEmpty()) {
+            throw new ProductNotFoundException("Product not found with id: '" + id + "'");
+        }
+        return optionalProduct.get();
     }
 
-    public Product replaceProductById(final Product newProduct) {
+    public void deleteProductById(final Long id) {
 
-        return productRepository.replaceById(newProduct);
-    }
-
-    public void deleteProductById(final UUID productUUID) {
-
-        productRepository.deleteById(productUUID);
-    }
-
-    private Product buildProduct(final UUID productId, final Product product) {
-
-        return Product.builder()
-                      .id(productId)
-                      .name(product.getName())
-                      .description(product.getDescription())
-                      .price(product.getPrice())
-                      .imageUrl(product.getImageUrl()).build();
-    }
-
-    private UUID generateProductId() {
-
-        return UUID.randomUUID();
+        productRepository.deleteById(id);
     }
 }

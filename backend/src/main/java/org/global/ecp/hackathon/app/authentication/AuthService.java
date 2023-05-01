@@ -18,17 +18,21 @@ public class AuthService {
     public Boolean authenticate(final AuthenticationRequest authenticationRequest) {
 
         final var username = authenticationRequest.getUsername();
+        final var user = getUser(username);
+        if (!isUserValid(user, authenticationRequest)) {
+            throw new UnauthenticatedUserException("Username or password is incorrect for user: '" + username + "'");
+        }
+        return true;
+    }
+
+    public User getUser(final String username) {
+
         final var optionalUser = userRepository.getUserByUsername(username);
 
         if (optionalUser.isEmpty()) {
             throw new UnauthenticatedUserException("User does not exist in db: '" + username + "'");
         }
-
-        final var user = optionalUser.get();
-        if (!isUserValid(user, authenticationRequest)) {
-            throw new UnauthenticatedUserException("Username or password is incorrect for user: '" + username + "'");
-        }
-        return true;
+        return optionalUser.get();
     }
 
     private boolean isUserValid(final User user,

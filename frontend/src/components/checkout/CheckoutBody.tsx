@@ -1,21 +1,28 @@
-import React, {useContext} from "react";
-import BasketContext from "../../context/BasketContext";
+import React from "react";
 import CheckoutProduct from "./CheckoutProduct";
+import {basket} from "../../model/productType";
 
-function CheckoutBody() {
+function CheckoutBody(props: { basket: basket}) {
 
-    const basket = useContext(BasketContext);
+    console.log(props.basket)
 
     return (
         <div className="checkout">
             <div className="checkout-title">
                 <div>ID</div>
                 <div>Name</div>
+                <div>Description</div>
                 <div>Price</div>
+                <div>Amount</div>
             </div>
             <div className="checkout-container">
-                {basket.basket?.map((product, index) => {
-                    return (<CheckoutProduct key={index} id={product.id} name={product.name} price={product.price}/>)
+                {props.basket.basketProducts?.map((basketProduct, index) => {
+                    return (<CheckoutProduct key={index}
+                                             id={basketProduct.id}
+                                             name={basketProduct.product.name}
+                                             description={basketProduct.product.description}
+                                             price={basketProduct.product.price}
+                                             count={basketProduct.count}/>)
                 })}
             </div>
         </div>

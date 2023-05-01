@@ -1,14 +1,15 @@
-.login-page{
+.login-page, .sign-up-page {
   padding: 4%;
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="email"] {
   height: 25px;
   border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-input[type="submit"] {
+input[type="submit"], .sign-up-button {
   margin-top: 10px;
   cursor: pointer;
   font-size: 15px;
@@ -18,16 +19,17 @@ input[type="submit"] {
   padding: 10px 20px;
 }
 
-input[type="submit"]:hover {
+input[type="submit"]:hover, .sign-up-button:hover {
   background: #6cf0c2;
 }
 
 .button-container {
   display: flex;
   justify-content: center;
+  gap: 3%;
 }
 
-.login-form {
+.login-form, .sign-up-form {
   background-color: white;
   padding: 2rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);

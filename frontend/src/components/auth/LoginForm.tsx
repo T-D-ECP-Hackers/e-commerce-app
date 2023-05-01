@@ -1,7 +1,7 @@
 import React, {useContext, useState} from "react";
 import UserContext from "../../context/UserContext";
 import {useNavigate} from "react-router-dom";
-import {goToProductsPage} from "../../functions/navigation";
+import {goToProductsPage, goToSignUp} from "../../functions/navigation";
 import {login} from "../../functions/login";
 import {loginError} from "../../model/loginErrorType";
 import {authenticateUser} from "../../api/authenticateUser";
@@ -11,21 +11,18 @@ function LoginForm() {
     const [errorMessages, setErrorMessages] = useState<loginError>({message: ""});
     const user = useContext(UserContext);
     const navigate = useNavigate();
-
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
         const {uname, pass} = document.forms[0];
         const userName = uname.value;
         const passWord = pass.value;
-        let userDetails = await authenticateUser(userName, passWord);
-        let isUserAuthenticated = userDetails !== undefined;
+        let isUserAuthenticated = await authenticateUser(userName, passWord, setErrorMessages);
         if (isUserAuthenticated) {
             console.log(`${userName} is authenticated`)
             login(userName, user.setContext)
             goToProductsPage(navigate);
         } else {
             console.log(`${userName} is not authenticated`)
-            setErrorMessages({message: "Incorrect username or password"});
         }
     };
 
@@ -46,7 +43,8 @@ function LoginForm() {
                 </div>
                 {renderErrorMessage()}
                 <div className="button-container">
-                    <input type="submit"/>
+                    <input type="submit" value="Login" />
+                    <button className="sign-up-button" onClick={() => goToSignUp(navigate)}>Sign Up</button>
                 </div>
             </form>
         </div>

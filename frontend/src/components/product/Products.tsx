@@ -8,11 +8,12 @@ function Products(props: { products: product[] }) {
             <div className="products-title">
                 <div>ID</div>
                 <div>Name</div>
+                <div>Description</div>
                 <div>Price</div>
             </div>
             <div className="products-container">
                 {props.products?.map((product) => {
-                    return (<Product key={product.id} id={product.id} name={product.name} price={product.price}/>)
+                    return (<Product key={product.id} id={product.id} name={product.name} description={product.description} price={product.price}/>)
                 })}
             </div>
 

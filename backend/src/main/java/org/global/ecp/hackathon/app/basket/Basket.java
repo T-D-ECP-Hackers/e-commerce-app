@@ -32,6 +32,7 @@ public class Basket {
     @GeneratedValue
     private Long id;
     private String username;
+    private Integer totalProducts;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "basket_products", joinColumns = @JoinColumn(name = "basket_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))

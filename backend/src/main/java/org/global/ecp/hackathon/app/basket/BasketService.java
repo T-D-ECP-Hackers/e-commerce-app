@@ -3,6 +3,7 @@ package org.global.ecp.hackathon.app.basket;
 import java.util.ArrayList;
 
 import lombok.extern.slf4j.Slf4j;
+import org.global.ecp.hackathon.app.authentication.AuthService;
 import org.global.ecp.hackathon.app.exception.BasketNotFoundException;
 import org.global.ecp.hackathon.app.product.ProductService;
 import org.springframework.stereotype.Service;
@@ -14,18 +15,21 @@ public class BasketService {
 
     private final BasketRepository basketRepository;
     private final ProductService productService;
+    private final AuthService authService;
 
     public BasketService(final BasketRepository basketRepository,
-                         final ProductService productService) {
+                         final ProductService productService,
+                         final AuthService authService) {
 
         this.basketRepository = basketRepository;
         this.productService = productService;
+        this.authService = authService;
     }
 
     public Basket getBasketByUsername(final String username) {
 
-        final var optionalBasket = basketRepository.getBasketByUsername(username);
-
+        final var user = authService.getUser(username);
+        final var optionalBasket = basketRepository.getBasketByUsername(user.getUsername());
         if (optionalBasket.isEmpty()) {
             throw new BasketNotFoundException("Basket for username '" + username + "' not found");
         }
@@ -34,7 +38,8 @@ public class BasketService {
 
     public Basket addToBasket(final String username, final Long productId) {
 
-        final var optionalBasket = basketRepository.getBasketByUsername(username);
+        final var user = authService.getUser(username);
+        final var optionalBasket = basketRepository.getBasketByUsername(user.getUsername());
         if (optionalBasket.isEmpty()) {
             final var newBasket = createNewBasket(username);
             return addProductToBasket(productId, newBasket);
@@ -57,8 +62,10 @@ public class BasketService {
             final var basketProduct = optionalBasketProduct.get();
             if (basketProduct.getCount() == 1) {
                 basket.getBasketProducts().remove(basketProduct);
+                basket.setTotalProducts(basket.getTotalProducts() - 1); // TODO: improve this
             } else {
                 basketProduct.setCount(basketProduct.getCount() - 1);
+                basket.setTotalProducts(basket.getTotalProducts() - 1);
             }
         }
         return basketRepository.save(basket);
@@ -73,7 +80,7 @@ public class BasketService {
 
     private Basket createNewBasket(final String username) {
 
-        return Basket.builder().username(username).basketProducts(new ArrayList<>()).build();
+        return Basket.builder().username(username).basketProducts(new ArrayList<>()).totalProducts(0).build();
     }
 
     private Basket addProductToBasket(final Long productId, final Basket basket) {
@@ -85,15 +92,15 @@ public class BasketService {
                                                                                       .equals(productById))
                                                 .findFirst();
 
+        final BasketProduct basketProduct;
         if (optionalBasketProduct.isPresent()) {
-            final var basketProduct = optionalBasketProduct.get();
+            basketProduct = optionalBasketProduct.get();
             basketProduct.setCount(basketProduct.getCount() + 1);
-
         } else {
-            final var basketProduct = BasketProduct.builder().basket(basket).product(productById).count(1).build();
+            basketProduct = BasketProduct.builder().basket(basket).product(productById).count(1).build();
             basket.getBasketProducts().add(basketProduct);
         }
-
+        basket.setTotalProducts(basket.getTotalProducts() + 1);
         return basketRepository.save(basket);
     }
 }

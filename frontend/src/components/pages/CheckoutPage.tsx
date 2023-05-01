@@ -1,30 +1,35 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import CheckoutBody from "../checkout/CheckoutBody";
 import {clearBasket} from "../../functions/checkout";
-import BasketContext from "../../context/BasketContext";
 import {useNavigate} from "react-router-dom";
-
-function calculateTotalCostOfProducts(basket: any) {
-    let total = 0;
-    for (let i = 0; i < basket.basket.length; i++) {
-        total += basket.basket[i].price;
-    }
-    return total;
-}
+import {getUser} from "../../functions/login";
+import LoginPage from "./LoginPage";
+import UserContext from "../../context/UserContext";
+import {basket} from "../../model/productType";
+import {fetchBasketProducts} from "../../api/fetchProducts";
 
 function CheckoutPage() {
 
-    const basket = useContext(BasketContext);
+    const user = useContext(UserContext);
+    let userName = getUser(user.setContext);
     const navigate = useNavigate();
-    let totalCost = calculateTotalCostOfProducts(basket);
+    const url = 'http://localhost:8080/api/v1/basket';
+
+    const [basket, setBasket] = useState<basket>({id: 0, username: "", totalProducts: 0, basketProducts: []});
+
+    useEffect(() => {
+        fetchBasketProducts(url + `/${userName}`, setBasket, navigate, user.setContext);
+    }, []);
 
     return (
-        <div className="checkout-page">
-            <div className="header-container">
-                <h1 onClick={() => clearBasket(basket, navigate)}>Checkout {basket.basket.length} items - Total: £{totalCost}</h1>
+        getUser(user.setContext) !== null ? (
+            <div className="checkout-page">
+                <div className="header-container">
+                    <h1 onClick={() => clearBasket(navigate)}>Checkout {basket.totalProducts}</h1>
+                </div>
+                <CheckoutBody basket={basket}/>
             </div>
-            <CheckoutBody/>
-        </div>
+        ) : LoginPage()
     );
 }
 

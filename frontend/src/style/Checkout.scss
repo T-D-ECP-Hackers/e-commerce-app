@@ -37,7 +37,7 @@
 .checkout-title {
   display: grid;
   grid-template-rows: 100%;
-  grid-template-columns: 33% 33% 33%;
+  grid-template-columns: 20% 20% 20% 20% 20%;
   padding: 2%;
   font-weight: bolder;
   border-bottom: 0.25em solid black;
@@ -46,6 +46,6 @@
 .checkout-product {
   display: grid;
   grid-template-rows: 100%;
-  grid-template-columns: 33% 33% 33%;
+  grid-template-columns: 20% 20% 20% 20% 20%;
   margin: 2%;
 }

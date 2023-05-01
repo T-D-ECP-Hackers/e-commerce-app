@@ -1,17 +1,37 @@
 import {goToProductsPage} from "./navigation";
 import {NavigateFunction} from "react-router-dom";
+import axios from "axios";
 
-export function addProductToBasket(props: { id: number; name: string; price: number }, basket: any) {
-    basket.setBasket([...basket.basket, {id: props.id, name: props.name, price: props.price}])
-    console.log("Adding product " + props.name + " to basket");
+const url = 'http://localhost:8080/api/v1/basket';
+
+export function addProductToBasket(productId: any, userName: string | null) {
+
+    axios.post(url + `/${userName}`, null, {
+        params: {
+            productId: productId
+        }
+    }).then(response => {
+        console.log(response.data)
+    }).catch(error => {
+        console.log("Error fetching data: " + error)
+    })
+
 }
 
-export function getProductsFromBasket(basket: any) {
-    return basket.basket;
+export function removeProductFromBasket(id: number, userName: string | null) {
+
+    axios.delete(url + `/${userName}`, {
+        params: {
+            productId: id
+        }
+    }).then(response => {
+        console.log(response.data)
+    }).catch(error => {
+        console.log("Error fetching data: " + error)
+    })
 }
 
-export function clearBasket(basket: any, navigate: NavigateFunction) {
-    basket.setBasket([])
+export function clearBasket(navigate: NavigateFunction) {
     console.log("Clearing basket")
     goToProductsPage(navigate);
 }

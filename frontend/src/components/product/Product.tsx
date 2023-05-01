@@ -1,17 +1,22 @@
 import React, {useContext} from 'react';
-import BasketContext from "../../context/BasketContext";
-import {addProductToBasket} from "../../functions/checkout";
+import {addProductToBasket, removeProductFromBasket} from "../../functions/checkout";
+import UserContext from "../../context/UserContext";
+import {getUser} from "../../functions/login";
 
-function Product(props: { id: number; name: string; price: number; }) {
+function Product(props: { id: number; name: string; description: string; price: number; }) {
 
-    const basket = useContext(BasketContext);
-    const {id, name, price} = props
+    const user = useContext(UserContext);
+    let userName = getUser(user.setContext);
+
+    const {id, name, description, price} = props
     return (
         <div className="product">
             <div className="product-id">{id}</div>
             <div className="product-name">{name}</div>
+            <div className="product-description">{description}</div>
             <div className="product-price">£{price}</div>
-            <button className="buy-button" onClick={() => addProductToBasket(props, basket)}>Buy</button>
+            <button className="add-to-basket" onClick={() => addProductToBasket(id, userName)}>Add to basket</button>
+            <button className="remove-from-basket" onClick={() => removeProductFromBasket(id, userName)}>Remove from basket</button>
         </div>
     );
 }

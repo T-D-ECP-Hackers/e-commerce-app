@@ -4,8 +4,6 @@ import {basket} from "../../model/productType";
 
 function CheckoutBody(props: { basket: basket}) {
 
-    console.log(props.basket)
-
     return (
         <div className="checkout">
             <div className="checkout-title">
@@ -18,7 +16,7 @@ function CheckoutBody(props: { basket: basket}) {
             <div className="checkout-container">
                 {props.basket.basketProducts?.map((basketProduct, index) => {
                     return (<CheckoutProduct key={index}
-                                             id={basketProduct.id}
+                                             id={basketProduct.product.id}
                                              name={basketProduct.product.name}
                                              description={basketProduct.product.description}
                                              price={basketProduct.product.price}

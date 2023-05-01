@@ -1,15 +1,14 @@
-import React, {useContext, useState} from "react";
-import UserContext from "../../context/UserContext";
+import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {goToProductsPage, goToSignUp} from "../../functions/navigation";
-import {login} from "../../functions/login";
+import {login} from "../../functions/authentication";
 import {loginError} from "../../model/loginErrorType";
 import {authenticateUser} from "../../api/authenticateUser";
+import ErrorMessage from "./ErrorMessage";
 
 function LoginForm() {
 
     const [errorMessages, setErrorMessages] = useState<loginError>({message: ""});
-    const user = useContext(UserContext);
     const navigate = useNavigate();
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
@@ -19,16 +18,12 @@ function LoginForm() {
         let isUserAuthenticated = await authenticateUser(userName, passWord, setErrorMessages);
         if (isUserAuthenticated) {
             console.log(`${userName} is authenticated`)
-            login(userName, user.setContext)
+            login(userName)
             goToProductsPage(navigate);
         } else {
             console.log(`${userName} is not authenticated`)
         }
     };
-
-    const renderErrorMessage = () => {
-        return <div className="error">{errorMessages.message}</div>
-    }
 
     const renderForm = (
         <div className="form">
@@ -41,7 +36,7 @@ function LoginForm() {
                     <label>Password </label>
                     <input type="password" name="pass" required/>
                 </div>
-                {renderErrorMessage()}
+                <ErrorMessage errorMessages={errorMessages}/>
                 <div className="button-container">
                     <input type="submit" value="Login" />
                     <button className="sign-up-button" onClick={() => goToSignUp(navigate)}>Sign Up</button>

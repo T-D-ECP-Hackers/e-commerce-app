@@ -1,19 +1,27 @@
 import React, {useContext} from 'react';
-import {Link, useNavigate} from "react-router-dom";
-import UserContext from "../../context/UserContext";
-import {getUser, logout} from "../../functions/login";
+import {Link, NavigateFunction, useNavigate} from "react-router-dom";
+import {getUser, logout} from "../../functions/authentication";
 import CheckoutOption from "../checkout/CheckoutOption";
+import {fetchBasket} from "../../api/fetchBasket";
+import BasketContext from "../../context/BasketContext";
 
 function NavigationBar() {
 
-    const user = useContext(UserContext);
     const navigate = useNavigate();
+    const basket = useContext(BasketContext);
+
+    function logoutAndClearBasket(navigate: NavigateFunction) {
+
+        logout(basket.setCurrentBasket, navigate);
+        fetchBasket(basket.setCurrentBasket);
+
+    }
 
     function getLoginOptions() {
-        return getUser(user.setContext) !== null ?
+        return getUser() !== null ?
             <>
-                <button className="logout" onClick={() => logout(user.setContext, navigate)}>Logout</button>
-                <label className="user-name">{user.context}</label>
+                <button className="logout" onClick={() => logoutAndClearBasket(navigate)}>Logout</button>
+                <label className="user-name">{getUser()}</label>
             </> :
             <Link to={`login`}>Login</Link>;
     }

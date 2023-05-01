@@ -32,7 +32,7 @@ public class AuthRegistrationService {
     private boolean usernameOrEmailAlreadyExists(final UserDto userDto) {
 
         return userRepository.existsUserByUsername(userDto.getUsername())
-                && userRepository.existsUserByEmail(userDto.getEmail());
+                || userRepository.existsUserByEmail(userDto.getEmail());
 
     }
 

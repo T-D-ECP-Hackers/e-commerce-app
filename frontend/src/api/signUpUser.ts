@@ -1,12 +1,14 @@
 import {loginError} from "../model/loginErrorType";
 import axios, {AxiosError} from "axios";
+import {registerUrl} from "./apiConstants";
 
-const url = 'http://localhost:8080/api/v1/register';
-
-export async function signUpUser(userName: any, passWord: any, email: any, setErrorMessages: (value: (((prevState: loginError) => loginError) | loginError)) => void) {
+export async function signUpUser(userName: any,
+                                 passWord: any,
+                                 email: any,
+                                 setErrorMessages: (value: (((prevState: loginError) => loginError) | loginError)) => void) {
 
     try {
-        let response = await axios.post(url, {
+        let response = await axios.post(registerUrl, {
             username: userName,
             password: passWord,
             email: email

@@ -2,18 +2,17 @@ import React, {useContext, useEffect, useState} from 'react';
 import Products from "./Products";
 import {fetchProducts} from "../../api/fetchProducts";
 import {product} from "../../model/productType";
-import UserContext from "../../context/UserContext";
-import {useNavigate} from "react-router-dom";
+import {fetchBasket} from "../../api/fetchBasket";
+import BasketContext from "../../context/BasketContext";
 
 function ProductBody() {
 
-    const url = 'http://localhost:8080/api/v1/products';
     const [products, setProducts] = useState<product[]>([]);
-    const user = useContext(UserContext);
-    const navigate = useNavigate();
+    const basket = useContext(BasketContext);
 
     useEffect(() => {
-        fetchProducts(url, setProducts, navigate, user.setContext);
+        fetchBasket(basket.setCurrentBasket);
+        fetchProducts(setProducts);
     }, []);
 
     return (

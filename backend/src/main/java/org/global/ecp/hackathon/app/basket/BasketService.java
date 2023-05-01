@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class BasketService {
 
-
     private final BasketRepository basketRepository;
     private final ProductService productService;
     private final AuthService authService;
@@ -75,6 +74,7 @@ public class BasketService {
 
         final var basket = getBasketByUsername(username);
         basket.getBasketProducts().clear();
+        basket.setTotalProducts(0);
         return basketRepository.save(basket);
     }
 

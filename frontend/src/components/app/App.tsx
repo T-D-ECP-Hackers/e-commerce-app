@@ -1,32 +1,24 @@
 import React, {useState} from 'react';
 import '../../style/App.scss';
-import UserContext from "../../context/UserContext";
-import {Outlet, useLocation, useNavigate} from "react-router-dom";
+import {Outlet, useLocation} from "react-router-dom";
 import Header from "./Header";
-import {goToProductsPage} from "../../functions/navigation";
+import {basket} from "../../model/productType";
+import BasketContext from "../../context/BasketContext";
+import RootPage from "../pages/RootPage";
 
 function App() {
 
-    const [context, setContext] = useState<string | null>(null)
-    const navigate = useNavigate();
     const location = useLocation();
-
-    function getRootPageContent() {
-        return location.pathname === "/" && <div className="app-body">
-            <div onClick={() => goToProductsPage(navigate)} className="products-block">
-                <label>View all our products!</label>
-            </div>
-        </div>;
-    }
+    const [currentBasket, setCurrentBasket] = useState<basket | null>(null)
 
     return (
-        <UserContext.Provider value={{context, setContext}}>
-                <div className="app">
-                    <Header/>
-                    {getRootPageContent()}
-                    <Outlet/>
-                </div>
-        </UserContext.Provider>
+        <BasketContext.Provider value={{currentBasket, setCurrentBasket}}>
+            <div className="app">
+                <Header/>
+                {location.pathname === "/" && <RootPage/>}
+                <Outlet/>
+            </div>
+        </BasketContext.Provider>
     );
 }
 

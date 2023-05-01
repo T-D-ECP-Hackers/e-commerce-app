@@ -1,20 +1,17 @@
-import React, {useContext, useState} from "react";
-import UserContext from "../../context/UserContext";
+import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {goToProductsPage} from "../../functions/navigation";
-import {login} from "../../functions/login";
+import {login} from "../../functions/authentication";
 import {loginError} from "../../model/loginErrorType";
 import {signUpUser} from "../../api/signUpUser";
+import ErrorMessage from "./ErrorMessage";
 
-export type User = {
-    name: string;
-};
 
 function SignUpForm() {
 
     const [errorMessages, setErrorMessages] = useState<loginError>({message: ""});
-    const user = useContext(UserContext);
     const navigate = useNavigate();
+
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
         const {uname, pass, email} = document.forms[0];
@@ -24,16 +21,12 @@ function SignUpForm() {
         let isUserAuthenticated = await signUpUser(userName, passWord, emailAddress, setErrorMessages);
         if (isUserAuthenticated) {
             console.log(`${userName} is signed up and authenticated`)
-            login(userName, user.setContext)
+            login(userName)
             goToProductsPage(navigate);
         } else {
             console.log(`${userName} is not is signed up or authenticated`)
         }
     };
-
-    const renderErrorMessage = () => {
-        return <div className="error">{errorMessages.message}</div>
-    }
 
     const renderForm = (
         <div className="form">
@@ -50,7 +43,7 @@ function SignUpForm() {
                     <label>Email </label>
                     <input type="email" name="email" required/>
                 </div>
-                {renderErrorMessage()}
+                <ErrorMessage errorMessages={errorMessages}/>
                 <div className="button-container">
                     <input type="submit" value="Sign Up"/>
                 </div>

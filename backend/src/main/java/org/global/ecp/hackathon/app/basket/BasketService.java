@@ -28,7 +28,7 @@ public class BasketService {
 
         BasketProduct basketProduct = basketProductService.createBasketProduct(getBasket(), productId);
         basketProduct.increaseQuantity();
-        return null;
+        return basketRepository.add(basketProduct);
     }
 
     // TODO - Task 5: remove basketProduct from the basket using the basketRepository
@@ -36,12 +36,12 @@ public class BasketService {
 
         BasketProduct basketProduct = basketProductService.createBasketProduct(getBasket(), productId);
         basketProduct.decreaseQuantity();
-        return null;
+        return basketRepository.remove(basketProduct);
     }
 
     // TODO - Task 8: implement checkout method
     public Basket checkout() {
 
-        return null;
+        return basketRepository.clear();
     }
 }

@@ -18,8 +18,11 @@ function CheckoutPage() {
     // TODO - Task 4: someone made a mistake here, we only want to return this if our basket is null,
     //  else return our current basket
     function getBasket(currentBasket: basket | null) {
-
-        return {id: 0, totalProducts: 0, basketProducts: []};
+        if (currentBasket === null) {
+            return {id: 0, totalProducts: 0, basketProducts: []};
+        } else {
+            return currentBasket;
+        }
     }
 
     return (

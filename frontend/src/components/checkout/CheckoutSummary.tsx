@@ -20,14 +20,21 @@ function CheckoutSummary({setShowCheckoutSummary}: { setShowCheckoutSummary: Rea
     // Also if the total cost of items is over or equal to £50, the shipping costs are free or worth £0
     function getShippingCost(totalCostOfItems: number) {
 
-        let shippingCost = 0.0000;
+        let shippingCost;
+        
+        if (totalCostOfItems >= 50) {
+            shippingCost = 0;
+        } else {
+            shippingCost = 0.1 * totalCostOfItems;
+        }
+
         return roundToTwoDecimalPlaces(shippingCost);
     }
 
     // TODO - Task 7: calculate the total cost of items and shipping
     function getTotalCost(totalCostOfItems: number, shippingCost: number) {
 
-        let totalCost = 0.0000;
+        let totalCost = totalCostOfItems + shippingCost;
         return roundToTwoDecimalPlaces(totalCost);
     }
 
